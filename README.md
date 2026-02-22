@@ -1,17 +1,22 @@
 # Aplikacja dla księgowego – ewidencja klientów
 
-Prosta aplikacja webowa (HTML/CSS/JS) do prowadzenia ewidencji klientów biura rachunkowego.
+Rozbudowana aplikacja webowa (HTML/CSS/JS) do prowadzenia ewidencji klientów biura rachunkowego.
 
-## Funkcje
+## Najważniejsze funkcje
 
 - dodawanie i edycja klienta,
-- oznaczenie, czy klient został zaksięgowany w danym miesiącu,
-- oznaczenie, czy dokument UPL-1 jest dostępny,
-- oznaczenie ewidencji środków trwałych,
+- status zaksięgowania w danym miesiącu,
+- obsługa dokumentów i zgłoszeń (`UPL-1`, `VAT-R`, `ZUS`, `JPK`),
+- sygnalizacja braków dokumentów,
+- ewidencja środków trwałych,
 - liczba dokumentów przyniesionych w miesiącu,
+- termin dostarczenia dokumentów,
 - notatki do klienta,
-- wyszukiwanie po nazwie klienta i notatkach,
-- zapis danych w `localStorage` (dane nie znikają po odświeżeniu).
+- wyszukiwanie po nazwie i notatkach,
+- filtrowanie po miesiącu i statusie,
+- panel statystyk (liczba klientów, zaksięgowani, braki dokumentów, liczba dokumentów),
+- eksport/import JSON (kopia zapasowa),
+- trwały zapis danych w `localStorage`.
 
 ## Uruchomienie
 

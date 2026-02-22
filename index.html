@@ -10,8 +10,10 @@
     <main class="container">
       <header>
         <h1>Panel ewidencji klientów</h1>
-        <p>Zarządzaj statusem księgowania, dokumentami i notatkami klientów biura rachunkowego.</p>
+        <p>Zarządzaj statusem księgowania, dokumentami, notatkami i raportowaniem miesięcznym.</p>
       </header>
+
+      <section class="stats" id="stats"></section>
 
       <section class="card">
         <h2>Dodaj / edytuj klienta</h2>
@@ -29,26 +31,36 @@
               <input type="month" id="month" required />
             </label>
 
+            <label>
+              Termin dostarczenia dokumentów
+              <input type="date" id="documents-deadline" />
+            </label>
+
+            <label>
+              Liczba dokumentów w miesiącu
+              <input type="number" id="documents-count" min="0" step="1" value="0" required />
+            </label>
+
             <label class="checkbox">
               <input type="checkbox" id="booked" />
               Zaksięgowany w tym miesiącu
             </label>
 
             <label class="checkbox">
-              <input type="checkbox" id="upl1" />
-              Mam dokument UPL-1
-            </label>
-
-            <label class="checkbox">
               <input type="checkbox" id="fixed-assets" />
               Prowadzona ewidencja środków trwałych
             </label>
-
-            <label>
-              Liczba dokumentów w miesiącu
-              <input type="number" id="documents-count" min="0" value="0" required />
-            </label>
           </div>
+
+          <fieldset>
+            <legend>Dokumenty i zgłoszenia</legend>
+            <div class="grid docs-grid">
+              <label class="checkbox"><input type="checkbox" id="upl1" /> UPL-1</label>
+              <label class="checkbox"><input type="checkbox" id="vat-r" /> VAT-R</label>
+              <label class="checkbox"><input type="checkbox" id="zus-zua" /> ZUS ZUA/ZZA</label>
+              <label class="checkbox"><input type="checkbox" id="jpk" /> JPK / pliki księgowe</label>
+            </div>
+          </fieldset>
 
           <label>
             Notatki
@@ -65,8 +77,27 @@
       <section class="card">
         <div class="list-header">
           <h2>Lista klientów</h2>
-          <input type="search" id="search" placeholder="Szukaj po nazwie lub notatce" />
+          <div class="filters">
+            <input type="search" id="search" placeholder="Szukaj po nazwie lub notatce" />
+            <input type="month" id="month-filter" />
+            <select id="status-filter">
+              <option value="all">Wszyscy</option>
+              <option value="booked">Tylko zaksięgowani</option>
+              <option value="unbooked">Tylko niezaksięgowani</option>
+              <option value="missing-docs">Braki dokumentów</option>
+            </select>
+          </div>
         </div>
+
+        <div class="toolbar">
+          <button type="button" id="export-json">Eksport JSON</button>
+          <label class="import-btn">
+            Import JSON
+            <input type="file" id="import-json" accept="application/json" hidden />
+          </label>
+          <button type="button" id="clear-all" class="danger">Wyczyść całą bazę</button>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -74,9 +105,9 @@
                 <th>Klient</th>
                 <th>Miesiąc</th>
                 <th>Zaksięgowany</th>
-                <th>UPL-1</th>
-                <th>Środki trwałe</th>
                 <th>Dokumenty</th>
+                <th>Kompletność</th>
+                <th>Termin</th>
                 <th>Notatki</th>
                 <th>Akcje</th>
               </tr>
@@ -92,9 +123,9 @@
         <td data-field="name"></td>
         <td data-field="month"></td>
         <td data-field="booked"></td>
-        <td data-field="upl1"></td>
-        <td data-field="fixedAssets"></td>
         <td data-field="documentsCount"></td>
+        <td data-field="docsStatus"></td>
+        <td data-field="documentsDeadline"></td>
         <td data-field="notes" class="notes"></td>
         <td class="actions-cell">
           <button type="button" data-action="edit">Edytuj</button>
