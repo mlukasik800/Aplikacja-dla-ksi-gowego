@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel księgowy biura rachunkowego</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>Panel ewidencji klientów</h1>
+        <p>Zarządzaj statusem księgowania, dokumentami, płatnościami i raportowaniem miesięcznym.</p>
+      </header>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="card reminder-card" id="reminder-card" hidden>
+        <h2>Przypomnienia</h2>
+        <ul id="reminders-list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>Dodaj / edytuj klienta</h2>
+        <form id="client-form">
+          <input type="hidden" id="client-id" />
+
+          <div class="grid">
+            <label>
+              Nazwa klienta
+              <input type="text" id="name" required placeholder="np. ABC Sp. z o.o." />
+            </label>
+
+            <label>
+              Osoba kontaktowa
+              <input type="text" id="contact-person" placeholder="np. Jan Kowalski" />
+            </label>
+
+            <label>
+              E-mail
+              <input type="email" id="email" placeholder="np. biuro@firma.pl" />
+            </label>
+
+            <label>
+              Telefon
+              <input type="tel" id="phone" placeholder="np. 500600700" />
+            </label>
+
+            <label>
+              Typ rozliczenia
+              <select id="settlement-type">
+                <option value="kpir">KPiR</option>
+                <option value="ryczalt">Ryczałt</option>
+                <option value="pelna-ksiegowosc">Pełna księgowość</option>
+              </select>
+            </label>
+
+            <label>
+              Miesiąc rozliczeniowy
+              <input type="month" id="month" required />
+            </label>
+
+            <label>
+              Termin dostarczenia dokumentów
+              <input type="date" id="documents-deadline" />
+            </label>
+
+            <label>
+              Termin płatności obsługi
+              <input type="date" id="payment-deadline" />
+            </label>
+
+            <label>
+              Miesięczna opłata (PLN)
+              <input type="number" id="monthly-fee" min="0" step="0.01" value="0" />
+            </label>
+
+            <label>
+              Liczba dokumentów w miesiącu
+              <input type="number" id="documents-count" min="0" step="1" value="0" required />
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="booked" />
+              Zaksięgowany w tym miesiącu
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="service-paid" />
+              Opłata za obsługę opłacona
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="fixed-assets" />
+              Prowadzona ewidencja środków trwałych
+            </label>
+          </div>
+
+          <fieldset>
+            <legend>Dokumenty i zgłoszenia</legend>
+            <div class="grid docs-grid">
+              <label class="checkbox"><input type="checkbox" id="upl1" /> UPL-1</label>
+              <label class="checkbox"><input type="checkbox" id="vat-r" /> VAT-R</label>
+              <label class="checkbox"><input type="checkbox" id="zus-zua" /> ZUS ZUA/ZZA</label>
+              <label class="checkbox"><input type="checkbox" id="jpk" /> JPK / pliki księgowe</label>
+              <label class="checkbox"><input type="checkbox" id="vat-sent" /> VAT/JPK wysłane</label>
+              <label class="checkbox"><input type="checkbox" id="zus-sent" /> Deklaracje ZUS wysłane</label>
+            </div>
+          </fieldset>
+
+          <label>
+            Notatki
+            <textarea id="notes" rows="4" placeholder="np. klient dosłał faktury 14. dnia miesiąca"></textarea>
+          </label>
+
+          <div class="quick-actions">
+            <button type="button" id="fill-note-missing">Szablon: brak dokumentów</button>
+            <button type="button" id="fill-note-reminder">Szablon: przypomnienie</button>
+            <button type="button" id="mark-docs-complete">Ustaw komplet dokumentów</button>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="primary">Zapisz klienta</button>
+            <button type="button" id="cancel-edit" class="secondary" hidden>Anuluj edycję</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="list-header">
+          <h2>Lista klientów</h2>
+          <div class="filters">
+            <input type="search" id="search" placeholder="Szukaj po nazwie, kontakcie lub notatce" />
+            <input type="month" id="month-filter" />
+            <select id="status-filter">
+              <option value="all">Wszyscy</option>
+              <option value="booked">Tylko zaksięgowani</option>
+              <option value="unbooked">Tylko niezaksięgowani</option>
+              <option value="missing-docs">Braki dokumentów</option>
+              <option value="overdue">Po terminie dokumentów</option>
+              <option value="unpaid">Nieopłaceni</option>
+              <option value="pending-filings">Niewysłane deklaracje</option>
+            </select>
+            <select id="sort-filter">
+              <option value="month-desc">Sortuj: miesiąc (najnowsze)</option>
+              <option value="month-asc">Sortuj: miesiąc (najstarsze)</option>
+              <option value="name-asc">Sortuj: nazwa A-Z</option>
+              <option value="docs-desc">Sortuj: najwięcej dokumentów</option>
+              <option value="fee-desc">Sortuj: najwyższa opłata</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button type="button" id="set-current-month">Ustaw bieżący miesiąc</button>
+          <button type="button" id="mark-visible-booked">Oznacz widocznych jako zaksięgowani</button>
+          <button type="button" id="mark-visible-paid">Oznacz widocznych jako opłaceni</button>
+          <button type="button" id="export-json">Eksport JSON</button>
+          <button type="button" id="export-csv">Eksport CSV</button>
+          <label class="import-btn">
+            Import JSON
+            <input type="file" id="import-json" accept="application/json" hidden />
+          </label>
+          <button type="button" id="generate-report">Generuj raport miesiąca</button>
+          <button type="button" id="clear-all" class="danger">Wyczyść całą bazę</button>
+        </div>
+
+        <div id="report-panel" class="report-panel" hidden>
+          <h3>Raport miesięczny</h3>
+          <textarea id="report-output" rows="10" readonly></textarea>
+          <div class="actions">
+            <button type="button" id="copy-report">Kopiuj raport</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Klient</th>
+                <th>Kontakt</th>
+                <th>Miesiąc</th>
+                <th>Typ</th>
+                <th>Zaksięgowany</th>
+                <th>Płatność</th>
+                <th>Dokumenty</th>
+                <th>Deklaracje</th>
+                <th>Kompletność</th>
+                <th>Termin dok.</th>
+                <th>Notatki</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="clients-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="row-template">
+      <tr>
+        <td data-field="name"></td>
+        <td data-field="contact"></td>
+        <td data-field="month"></td>
+        <td data-field="settlementType"></td>
+        <td data-field="booked"></td>
+        <td data-field="payment"></td>
+        <td data-field="documentsCount"></td>
+        <td data-field="filingsStatus"></td>
+        <td data-field="docsStatus"></td>
+        <td data-field="documentsDeadline"></td>
+        <td data-field="notes" class="notes"></td>
+        <td class="actions-cell">
+          <button type="button" data-action="edit">Edytuj</button>
+          <button type="button" data-action="delete" class="danger">Usuń</button>
+        </td>
+      </tr>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
