@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel księgowy biura rachunkowego</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>Panel ewidencji klientów</h1>
+        <p>Zarządzaj statusem księgowania, dokumentami, notatkami i raportowaniem miesięcznym.</p>
+      </header>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="card">
+        <h2>Dodaj / edytuj klienta</h2>
+        <form id="client-form">
+          <input type="hidden" id="client-id" />
+
+          <div class="grid">
+            <label>
+              Nazwa klienta
+              <input type="text" id="name" required placeholder="np. ABC Sp. z o.o." />
+            </label>
+
+            <label>
+              Miesiąc rozliczeniowy
+              <input type="month" id="month" required />
+            </label>
+
+            <label>
+              Termin dostarczenia dokumentów
+              <input type="date" id="documents-deadline" />
+            </label>
+
+            <label>
+              Liczba dokumentów w miesiącu
+              <input type="number" id="documents-count" min="0" step="1" value="0" required />
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="booked" />
+              Zaksięgowany w tym miesiącu
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="fixed-assets" />
+              Prowadzona ewidencja środków trwałych
+            </label>
+          </div>
+
+          <fieldset>
+            <legend>Dokumenty i zgłoszenia</legend>
+            <div class="grid docs-grid">
+              <label class="checkbox"><input type="checkbox" id="upl1" /> UPL-1</label>
+              <label class="checkbox"><input type="checkbox" id="vat-r" /> VAT-R</label>
+              <label class="checkbox"><input type="checkbox" id="zus-zua" /> ZUS ZUA/ZZA</label>
+              <label class="checkbox"><input type="checkbox" id="jpk" /> JPK / pliki księgowe</label>
+            </div>
+          </fieldset>
+
+          <label>
+            Notatki
+            <textarea id="notes" rows="4" placeholder="np. klient dosłał faktury 14. dnia miesiąca"></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="primary">Zapisz klienta</button>
+            <button type="button" id="cancel-edit" class="secondary" hidden>Anuluj edycję</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="list-header">
+          <h2>Lista klientów</h2>
+          <div class="filters">
+            <input type="search" id="search" placeholder="Szukaj po nazwie lub notatce" />
+            <input type="month" id="month-filter" />
+            <select id="status-filter">
+              <option value="all">Wszyscy</option>
+              <option value="booked">Tylko zaksięgowani</option>
+              <option value="unbooked">Tylko niezaksięgowani</option>
+              <option value="missing-docs">Braki dokumentów</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button type="button" id="export-json">Eksport JSON</button>
+          <label class="import-btn">
+            Import JSON
+            <input type="file" id="import-json" accept="application/json" hidden />
+          </label>
+          <button type="button" id="clear-all" class="danger">Wyczyść całą bazę</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Klient</th>
+                <th>Miesiąc</th>
+                <th>Zaksięgowany</th>
+                <th>Dokumenty</th>
+                <th>Kompletność</th>
+                <th>Termin</th>
+                <th>Notatki</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="clients-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="row-template">
+      <tr>
+        <td data-field="name"></td>
+        <td data-field="month"></td>
+        <td data-field="booked"></td>
+        <td data-field="documentsCount"></td>
+        <td data-field="docsStatus"></td>
+        <td data-field="documentsDeadline"></td>
+        <td data-field="notes" class="notes"></td>
+        <td class="actions-cell">
+          <button type="button" data-action="edit">Edytuj</button>
+          <button type="button" data-action="delete" class="danger">Usuń</button>
+        </td>
+      </tr>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
