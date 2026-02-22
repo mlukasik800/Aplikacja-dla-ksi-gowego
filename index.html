@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel księgowy biura rachunkowego</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>Panel ewidencji klientów</h1>
+        <p>Zarządzaj statusem księgowania, dokumentami i notatkami klientów biura rachunkowego.</p>
+      </header>
+
+      <section class="card">
+        <h2>Dodaj / edytuj klienta</h2>
+        <form id="client-form">
+          <input type="hidden" id="client-id" />
+
+          <div class="grid">
+            <label>
+              Nazwa klienta
+              <input type="text" id="name" required placeholder="np. ABC Sp. z o.o." />
+            </label>
+
+            <label>
+              Miesiąc rozliczeniowy
+              <input type="month" id="month" required />
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="booked" />
+              Zaksięgowany w tym miesiącu
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="upl1" />
+              Mam dokument UPL-1
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" id="fixed-assets" />
+              Prowadzona ewidencja środków trwałych
+            </label>
+
+            <label>
+              Liczba dokumentów w miesiącu
+              <input type="number" id="documents-count" min="0" value="0" required />
+            </label>
+          </div>
+
+          <label>
+            Notatki
+            <textarea id="notes" rows="4" placeholder="np. klient dosłał faktury 14. dnia miesiąca"></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="primary">Zapisz klienta</button>
+            <button type="button" id="cancel-edit" class="secondary" hidden>Anuluj edycję</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="list-header">
+          <h2>Lista klientów</h2>
+          <input type="search" id="search" placeholder="Szukaj po nazwie lub notatce" />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Klient</th>
+                <th>Miesiąc</th>
+                <th>Zaksięgowany</th>
+                <th>UPL-1</th>
+                <th>Środki trwałe</th>
+                <th>Dokumenty</th>
+                <th>Notatki</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="clients-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="row-template">
+      <tr>
+        <td data-field="name"></td>
+        <td data-field="month"></td>
+        <td data-field="booked"></td>
+        <td data-field="upl1"></td>
+        <td data-field="fixedAssets"></td>
+        <td data-field="documentsCount"></td>
+        <td data-field="notes" class="notes"></td>
+        <td class="actions-cell">
+          <button type="button" data-action="edit">Edytuj</button>
+          <button type="button" data-action="delete" class="danger">Usuń</button>
+        </td>
+      </tr>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
